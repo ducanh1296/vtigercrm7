@@ -15,6 +15,7 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 	 * @return Vtiger_Record_Model or Module specific Record Model instance
 	 */
 	public function getRecordModelFromRequest(Vtiger_Request $request) {
+        global $adb;
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 
@@ -27,21 +28,24 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 			$recordModel->set('mode', 'edit');
 
 			$fieldModelList = $recordModel->getModule()->getFields();
+
 			foreach ($fieldModelList as $fieldName => $fieldModel) {
+
 				//For not converting createdtime and modified time to user format
 				$uiType = $fieldModel->get('uitype');
+
 				if ($uiType == 70) {
 					$fieldValue = $recordModel->get($fieldName);
 				} else {
 					$fieldValue = $fieldModel->getUITypeModel()->getUserRequestValue($recordModel->get($fieldName));
 				}
-
-
 				if ($request->has($fieldName)) {
+
 					$fieldValue = $request->get($fieldName, null);
 				} else if ($fieldName === $request->get('field')) {
 					$fieldValue = $request->get('value');
 				}
+                //$fieldValue = created
 
 				/**
 				 * If field is enable recurrence then we need to pass related fields of
@@ -55,6 +59,7 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 					}
 				}
 
+
 				$fieldDataType = $fieldModel->getFieldDataType();
 				if ($fieldDataType == 'time') {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
@@ -65,6 +70,19 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 					}
 					$recordModel->set($fieldName, $fieldValue);
 				}
+                if($fieldValue == 'Shipped') {
+                    $result = $adb->pquery('SELECT sum(quantity) as a, productid FROM vtiger_inventoryproductrel where id = ? GROUP BY productid', array($recordId));
+                    $num_rows = $adb->num_rows($result);
+
+                    for($i=0;$i<$num_rows;$i++){
+                        $productid = $adb->query_result($result,$i,"productid");
+                        $sumquantity = $adb->query_result($result,$i,"a");
+                        $b = $adb->pquery('SELECT qtyinstock FROM vtiger_products where productid = ?', array($productid));
+                        $qtyinstock = $adb->query_result($b, 0, 'qtyinstock');
+                        $new = $qtyinstock - $sumquantity;
+                        $adb->pquery('UPDATE vtiger_products SET qtyinstock=? WHERE productid = ? ', array($new,$productid));
+                    }
+                }
 				$recordModel->set($fieldName, $fieldValue);
 			}
 		} else {

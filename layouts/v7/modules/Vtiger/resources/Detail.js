@@ -1076,7 +1076,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		data['record'] = recordId;
 		data['module'] = this.getModuleName();
 		data['action'] = 'SaveAjax';
-
 		app.request.post({data:data}).then(
 			function(err, reponseData){
 				if(err === null){
@@ -1085,7 +1084,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				aDeferred.resolve(err, reponseData);
 			}
 		);
-
 		return aDeferred.promise();
 	},
 
@@ -1107,6 +1105,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 * @returns {undefined}
 	 */
 	ajaxEditHandling : function(currentTdElement){
+
 		var thisInstance = this;
 		var detailViewValue = jQuery('.value',currentTdElement);
 		var editElement = jQuery('.edit',currentTdElement);
@@ -1132,14 +1131,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		}
 
 		if(fieldType === 'multipicklist') {
+
 			var multiPicklistFieldName = fieldName.split('[]');
 			fieldName = multiPicklistFieldName[0];
 		}
 
 		var customHandlingFields = ['owner','ownergroup','picklist','multipicklist','reference','currencyList','text'];
+		//1
 		if(jQuery.inArray(fieldType, customHandlingFields) !== -1){
 			value = rawValue;
+
 		}
+		//1
 		if(jQuery('.editElement',editElement).length === 0){
 			var fieldInfo;
 			if(self.getOverlayDetailMode() == true){
@@ -1153,6 +1156,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			var fieldModel = fieldObject.getUiTypeModel();
 
 			var ele = jQuery('<div class="input-group editElement"></div>');
+
 			var actionButtons = '<span class="pointerCursorOnHover input-group-addon input-group-addon-save inlineAjaxSave"><i class="fa fa-check"></i></span>';
 			actionButtons += '<span class="pointerCursorOnHover input-group-addon input-group-addon-cancel inlineAjaxCancel"><i class="fa fa-close"></i></span>';
 			//wrapping action buttons with class called input-save-wrap
@@ -1185,6 +1189,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		vtigerInstance.referenceModulePopupRegisterEvent(contentHolder);
 		editElement.addClass('ajaxEdited');
 		thisInstance.registerSaveOnEnterEvent(editElement);
+		//1
 		jQuery('.editAction').addClass('hide');
 
 		if(fieldType == 'picklist' || fieldType == 'ownergroup' || fieldType == 'owner') {
