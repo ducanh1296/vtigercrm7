@@ -10,7 +10,7 @@
 
 require_once 'include/utils/utils.php';
 require_once 'include/utils/CommonUtils.php';
-
+include_once 'include/database/PearDatabase.php';
 require_once 'includes/Loader.php';
 vimport ('includes.runtime.EntryPoint');
 
@@ -22,6 +22,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	 * @throws AppException
 	 */
 	protected function checkLogin (Vtiger_Request $request) {
+
 		if (!$this->hasLogin()) {
 			$return_params = $_SERVER['QUERY_STRING'];
 			if($return_params && !$_SESSION['return_params']) {
@@ -142,15 +143,29 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		if ($module == 'Reports' && !$view) {
 			Vtiger_Session::readonly();
 		}
+        $userid = $currentUser->id;
+        $adb = PearDatabase::getInstance();
+        $result1 = $adb->pquery("SELECT ga_secret FROM vtiger_users WHERE id = ?", array($userid));
+        $gasecret = $adb->query_result($result1,0,'ga_secret');
 
 		try {
+
 			if($this->isInstalled() === false && $module != 'Install') {
 				header('Location:index.php?module=Install&view=Index');
 				exit;
 			}
 
+//            if($gasecret==null) {
+//                header("Location:index.php?module=Users&view=EnableCode&record=$userid");
+//                exit;
+//            }
+
 			if(empty($module)) {
 				if ($this->hasLogin()) {
+                    if($gasecret==null) {
+                        header("Location:index.php?module=Users&view=EnableCode&record=$userid");
+                        exit;
+                    }
 					$defaultModule = vglobal('default_module');
 					$moduleModel = Vtiger_Module_Model::getInstance($defaultModule);
 					if(!empty($defaultModule) && $defaultModule != 'Home' && $moduleModel && $moduleModel->isActive()) {
@@ -171,19 +186,23 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 			}
 
 			if (!empty($action)) {
+
 				$componentType = 'Action';
 				$componentName = $action;
 			} else {
+
 				$componentType = 'View';
 				if(empty($view)) {
 					$view = 'Index';
 				}
 				$componentName = $view;
 			}
+
 			$handlerClass = Vtiger_Loader::getComponentClassName($componentType, $componentName, $qualifiedModuleName);
 			$handler = new $handlerClass();
 
 			if ($handler) {
+
 				vglobal('currentModule', $module);
 
 				// Ensure handler validates the request
@@ -217,6 +236,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 			} else {
 				throw new AppException(vtranslate('LBL_HANDLER_NOT_FOUND'));
 			}
+
 		} catch(Exception $e) {
 			if ($view) {
 				// log for development
@@ -231,6 +251,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 				$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 				$response->setError($e->getMessage());
 			}
+
 		}
 
 		if ($response) {

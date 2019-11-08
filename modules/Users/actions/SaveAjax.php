@@ -1,4 +1,8 @@
 <?php
+require "vendor/autoload.php";
+include_once 'include/database/PearDatabase.php';
+
+use Sonata\GoogleAuthenticator;
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
@@ -19,6 +23,7 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$this->exposeMethod('transferOwner');
 		$this->exposeMethod('changeUsername');
 		$this->exposeMethod('changeAccessKey');
+        $this->exposeMethod('checkCode');
 	}
 
 	public function checkPermission(Vtiger_Request $request) {
@@ -31,7 +36,7 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
 			} else if(in_array($mode, array('userExists','restoreUser','transferOwner','changeUsername'))) {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
-			} else if($mode != 'savePassword' && ($currentUserModel->getId() != $request->get('record'))) {
+			} else if($mode != 'savePassword' && $mode != 'checkCode' && ($currentUserModel->getId() != $request->get('record'))) {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
 			}
 		}
@@ -212,4 +217,39 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		}
 		$response->emit();
 	}
+
+    public function checkCode(Vtiger_Request $request) {
+        $moduleName = $request->getModule();
+        $userid = $request->get('userid');
+        $code = $request->get('code');
+
+        $g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+        $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
+        $secret = $userid.$salt;
+        $check_this_code = $code;
+
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery("SELECT ga_secret FROM vtiger_users WHERE id = ?", array($userid));
+        $gasecret = $adb->query_result($result, 'ga_secret');
+
+        $response = new Vtiger_Response();
+        if ($gasecret == null) {
+            if ($g->checkCode($secret, $check_this_code) == true) {
+                $adb->pquery("UPDATE vtiger_users SET ga_secret = ? WHERE id = ?", array($secret, $userid));
+                $status = 'enable';
+                $response->setResult(array('success' => true, 'message' => vtranslate('ENABLE', $moduleName)));
+            } else {
+                $response->setError('QR INCORRECT', 'QR INCORRECT');
+            }
+        }else{
+            if ($g->checkCode($secret, $check_this_code) == true) {
+                $adb->pquery("UPDATE vtiger_users SET ga_secret = ? WHERE id = ?", array(null, $userid));
+                $status = 'disable';
+                $response->setResult(array('success' => true, 'message' => vtranslate('DISABLE', $moduleName)));
+            } else {
+                $response->setError('QR INCORRECT', 'QR INCORRECT');
+            }
+        }
+        $response->emit();
+    }
 }

@@ -21,6 +21,7 @@ class Users_UserSetup_View extends Vtiger_Index_View {
 		$userModel = Users_Record_Model::getCurrentUserModel();
 		$userModuleModel = Users_Module_Model::getInstance($moduleName);
 		$userSetupStatus = $userModel->isFirstTimeLogin($userModel->id);
+        $userid = $userModel->id;
 		if($userSetupStatus) {
 			$isFirstUser = Users_CRMSetup::isFirstUser($userModel);
 			if($isFirstUser) {

@@ -83,6 +83,12 @@ class Users_DetailView_Model extends Vtiger_DetailView_Model {
 										'linkurl'	=> "javascript:Users_Detail_Js.triggerChangeAccessKey('index.php?module=Users&action=SaveAjax&mode=changeAccessKey&record=$recordId')",
 										'linkicon'	=> ''
 									);
+            $detailViewActionLinks[] = array(
+                                        'linktype'	=> 'DETAILVIEW',
+                                        'linklabel' => 'Change Authentication',
+                                        'linkurl'	=> "javascript:Users_Detail_Js.triggerAuthen('index.php?module=Users&view=EditAjax&mode=changeAuthen&recordId=$recordId','Users')",
+                                        'linkicon'	=> ''
+                                    );
 
 			foreach ($detailViewActionLinks as $detailViewLink) {
 				$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);

@@ -1,4 +1,8 @@
 <?php
+require "vendor/autoload.php";
+include_once 'include/database/PearDatabase.php';
+
+use Sonata\GoogleAuthenticator;
 
 /* +***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
@@ -15,11 +19,14 @@ Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
 		parent::__construct();
 		$this->exposeMethod('changePassword');
 		$this->exposeMethod('changeUsername');
+        $this->exposeMethod('changeAuthen');
+
 	}
 
 	public function checkPermission(Vtiger_Request $request){
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$userId = $request->get('recordId');
+        $userId = $request->get('recordId');
+
 		if($currentUserModel->getId() != $userId && !$currentUserModel->isAdminUser()) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
 		}
@@ -45,6 +52,7 @@ Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
 	}
 
 	public function changeUsername(Vtiger_Request $request) {
+
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		$userId = $request->get('record');
@@ -55,5 +63,30 @@ Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->view('ChangeUsername.tpl', $moduleName);
 	}
+
+    public function changeAuthen(Vtiger_Request $request) {
+        $viewer = $this->getViewer($request);
+        $moduleName = $request->get('module');
+        $userId = $request->get('recordId');
+
+        $g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery("SELECT ga_secret FROM vtiger_users WHERE id = ?", array($userId));
+        $gasecret = $adb->query_result($result, 'ga_secret');
+
+        if($gasecret == null) {
+            $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
+            $secret = $userId.$salt;
+            $qr = '<img src="'.$g->getURL($userId, 'test.com', $secret).'"';
+        }else{
+            $qr = null;
+        }
+
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('USERID', $userId);
+        $viewer->assign('QR', $qr);
+        $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->view('ChangeAuthen.tpl', $moduleName);
+    }
 
 }

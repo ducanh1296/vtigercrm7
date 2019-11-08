@@ -8,7 +8,63 @@
  *************************************************************************************/
 
 Vtiger_Detail_Js("Users_Detail_Js",{
-	
+
+	triggerAuthen : function (url, module){
+		app.request.get({'url' :url}).then(
+			function(err, data) {
+				if(err === null) {
+					app.helper.showModal(data);
+					var form = jQuery('#confirmCode');
+					form.on('submit',function(e){
+						e.preventDefault();
+					});
+
+					var params = {
+						submitHandler: function(form) {
+							form = jQuery(form);
+							var code  = form.find('[name="code"]').val();
+							var userid = form.find('[name="userid"]').val();
+
+							if(err == null){
+								var params = {
+									'data' : {
+										'module': app.getModuleName(),
+										'action' : "SaveAjax",
+										'mode' : 'checkCode',
+										'code' : code,
+										'userid' : userid
+									}
+								};
+								console.log(params);
+
+
+								app.request.post(params).then(
+									function(err, data) {
+										if(err == null){
+											app.helper.hideModal();
+											var successMessage = app.vtranslate(data.message);
+											app.helper.showSuccessNotification({"message":successMessage});
+										}else{
+											app.helper.showErrorNotification({"message":err});
+											return false;
+										}
+									}
+								);
+							} else {
+								var errorMessage = app.vtranslate('JS_PASSWORD_MISMATCH_ERROR');
+								app.helper.showErrorNotification({"message":errorMessage});
+								return false;
+							}
+						}
+					};
+					form.vtValidate(params);
+				}else {
+					app.helper.showErrorNotification({'message': err.message});
+				}
+			}
+		);
+	},
+
 	triggerChangePassword : function (url, module){
 		app.request.get({'url' :url}).then(
 			function(err, data) {
