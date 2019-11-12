@@ -24,6 +24,7 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$this->exposeMethod('changeUsername');
 		$this->exposeMethod('changeAccessKey');
         $this->exposeMethod('checkCode');
+        $this->exposeMethod('disable2FA');
 	}
 
 	public function checkPermission(Vtiger_Request $request) {
@@ -250,6 +251,18 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
                 $response->setError('QR INCORRECT', 'QR INCORRECT');
             }
         }
+        $response->emit();
+    }
+
+    public function disable2FA(Vtiger_Request $request) {
+        $response = new Vtiger_Response();
+        $moduleName = $request->getModule();
+        $recordId = $request->get('record');
+
+        $adb = PearDatabase::getInstance();
+        $adb->pquery("UPDATE vtiger_users SET ga_secret = ? WHERE id = ?", array(null, $recordId));
+
+        $response->setResult(array('success' => true, 'message' => vtranslate('DISABLE', $moduleName)));
         $response->emit();
     }
 }

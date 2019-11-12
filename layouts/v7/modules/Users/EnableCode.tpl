@@ -70,7 +70,7 @@
                                 <span class="redColor">*</span>
                             </label>
                             <div class="controls col-xs-6">
-                                {$QR}
+                                <a  href="{$QR}"><img style="border: 0; padding:10px" src="{$QR}"/></a>
                             </div>
                         </div>
 

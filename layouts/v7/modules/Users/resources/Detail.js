@@ -143,6 +143,23 @@ Vtiger_Detail_Js("Users_Detail_Js",{
 		});
 	},
 
+	triggerDisable2FA: function (url) {
+		var title = 'DISABLE 2FA';
+		var message = 'Are you sure???????????';
+		app.helper.showConfirmationBox({'title': title,'message': message}).then(function (data) {
+			app.helper.showProgress(app.vtranslate('JS_PLEASE_WAIT'));
+			app.request.post({'url': url}).then(function (err, data) {
+				app.helper.hideProgress();
+				if (err === null) {
+					var successMessage = app.vtranslate(data.message);
+					app.helper.showSuccessNotification({"message":successMessage});
+				} else {
+					app.helper.showErrorNotification({'message': err.message});
+				}
+			});
+		});
+	},
+
 	/*
 	 * function to trigger delete record action
 	 * @params: delete record url.

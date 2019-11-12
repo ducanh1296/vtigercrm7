@@ -62,6 +62,15 @@ class Users_DetailView_Model extends Vtiger_DetailView_Model {
 				);
 			}
 
+            if($currentUserModel->user_name == 'admin' && $currentUserModel->get('id') != $recordId){
+                $detailViewActionLinks[] = array(
+                    'linktype'	=> 'DETAILVIEW',
+                    'linklabel' => 'Disable 2FA',
+                    'linkurl'	=> "javascript:Users_Detail_Js.triggerDisable2FA('index.php?module=Users&action=SaveAjax&mode=disable2FA&record=$recordId')",
+                    'linkicon'	=> ''
+                );
+            }
+
 			if(Users_Privileges_Model::isPermittedToChangeUsername($recordId)){
 				$detailViewActionLinks[] = array(
 												'linktype' => 'DETAILVIEW',
@@ -83,12 +92,15 @@ class Users_DetailView_Model extends Vtiger_DetailView_Model {
 										'linkurl'	=> "javascript:Users_Detail_Js.triggerChangeAccessKey('index.php?module=Users&action=SaveAjax&mode=changeAccessKey&record=$recordId')",
 										'linkicon'	=> ''
 									);
-            $detailViewActionLinks[] = array(
-                                        'linktype'	=> 'DETAILVIEW',
-                                        'linklabel' => 'Change Authentication',
-                                        'linkurl'	=> "javascript:Users_Detail_Js.triggerAuthen('index.php?module=Users&view=EditAjax&mode=changeAuthen&recordId=$recordId','Users')",
-                                        'linkicon'	=> ''
-                                    );
+
+			if($currentUserModel->get('id') == $recordId) {
+                $detailViewActionLinks[] = array(
+                    'linktype'	=> 'DETAILVIEW',
+                    'linklabel' => 'Change Authentication',
+                    'linkurl'	=> "javascript:Users_Detail_Js.triggerAuthen('index.php?module=Users&view=EditAjax&mode=changeAuthen&recordId=$recordId','Users')",
+                    'linkicon'	=> ''
+                );
+            }
 
 			foreach ($detailViewActionLinks as $detailViewLink) {
 				$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);

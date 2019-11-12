@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.7, created on 2019-11-07 09:49:35
+<?php /* Smarty version Smarty-3.1.7, created on 2019-11-08 08:45:41
          compiled from "C:\xampp\htdocs\vtigercrm\includes\runtime/../../layouts/v7\modules\Users\EnableCode.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:12163297455dc388026cb446-63534922%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'dd52e00137ad6141cd508a23e305d00a630b8ff8' => 
     array (
       0 => 'C:\\xampp\\htdocs\\vtigercrm\\includes\\runtime/../../layouts/v7\\modules\\Users\\EnableCode.tpl',
-      1 => 1573120174,
+      1 => 1573202640,
       2 => 'file',
     ),
   ),
@@ -103,8 +103,9 @@ $_valid = $_smarty_tpl->decodeProperties(array (
                                 <span class="redColor">*</span>
                             </label>
                             <div class="controls col-xs-6">
-                                <?php echo $_smarty_tpl->tpl_vars['QR']->value;?>
-
+                                <a  href="<?php echo $_smarty_tpl->tpl_vars['QR']->value;?>
+"><img style="border: 0; padding:10px" src="<?php echo $_smarty_tpl->tpl_vars['QR']->value;?>
+"/></a>
                             </div>
                         </div>
 

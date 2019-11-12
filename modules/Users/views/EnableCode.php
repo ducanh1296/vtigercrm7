@@ -23,9 +23,13 @@ class Users_EnableCode_View extends Vtiger_Index_View {
         $userId = $request->get('record');
 
         $g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
-        $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
-        $secret = $userId.$salt;
-        $qr = '<img src="'.$g->getURL($userId, 'test.com', $secret).'"';
+        $adb = PearDatabase::getInstance();
+//        $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
+//        $secret = $userId.$salt;
+//        $qr = '<img src="'.$g->getURL($userId, 'test.com', $secret).'"';
+        $secret =  $g->generateSecret();
+        $adb->pquery("UPDATE vtiger_users SET ga_secret = ? WHERE id = ?", array($secret, $userId));
+        $qr = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($userId, $secret, 'GoogleAuthenticatorExample');
 
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('USERID', $userId);

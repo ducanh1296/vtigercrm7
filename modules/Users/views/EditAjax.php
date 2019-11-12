@@ -26,6 +26,7 @@ Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
 	public function checkPermission(Vtiger_Request $request){
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
         $userId = $request->get('recordId');
+        $mode = $request->getMode();
 
 		if($currentUserModel->getId() != $userId && !$currentUserModel->isAdminUser()) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
@@ -75,12 +76,13 @@ Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
         $gasecret = $adb->query_result($result, 'ga_secret');
 
         if($gasecret == null) {
-            $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
-            $secret = $userId.$salt;
-            $qr = '<img src="'.$g->getURL($userId, 'test.com', $secret).'"';
+//            $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
+//            $secret = $userId.$salt;
+//            $qr = '<img src="'.$g->getURL($userId, 'test.com', $secret).'"';
         }else{
             $qr = null;
         }
+
 
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('USERID', $userId);
