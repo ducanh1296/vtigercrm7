@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.7, created on 2019-10-29 07:06:15
+<?php /* Smarty version Smarty-3.1.7, created on 2019-11-13 08:46:44
          compiled from "C:\xampp\htdocs\vtigercrm\includes\runtime/../../layouts/v7\modules\Vtiger\dashboards\DashBoardHeader.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:10797736575db7e4e7be6dd7-21073683%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '0267a3dc81c364344bce2dbc620916b63369a7e9' => 
     array (
       0 => 'C:\\xampp\\htdocs\\vtigercrm\\includes\\runtime/../../layouts/v7\\modules\\Vtiger\\dashboards\\DashBoardHeader.tpl',
-      1 => 1520586669,
+      1 => 1573634795,
       2 => 'file',
     ),
   ),
@@ -15,6 +15,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'function' => 
   array (
   ),
+  'version' => 'Smarty-3.1.7',
+  'unifunc' => 'content_5db7e4e7c0f2c',
   'variables' => 
   array (
     'SELECTABLE_WIDGETS' => 0,
@@ -25,8 +27,6 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'MODULE_PERMISSION' => 0,
   ),
   'has_nocache_code' => false,
-  'version' => 'Smarty-3.1.7',
-  'unifunc' => 'content_5db7e4e7c0f2c',
 ),false); /*/%%SmartyHeaderCode%%*/?>
 <?php if ($_valid && !is_callable('content_5db7e4e7c0f2c')) {function content_5db7e4e7c0f2c($_smarty_tpl) {?>
 
@@ -64,6 +64,11 @@ $_smarty_tpl->tpl_vars['WIDGET']->_loop = true;
 							</li>
 						<?php }?>
 					<?php } ?>
+					<li>
+						<a onclick="Vtiger_DashBoard_Js.addWidget1(this, 'index.php?module=Potentials&view=ShowWidget&name=GroupedBySalesPerson&linkid=59')" href="javascript:void(0);" data-linkid="59" data-name="GroupedBySalesPerson" data-width="2" data-height="1">
+							Opportunities by Stage1111111</a>
+					</li>
+
 
 					<?php if ($_smarty_tpl->tpl_vars['MINILISTWIDGET']->value&&$_smarty_tpl->tpl_vars['MODULE_NAME']->value=='Home'){?>
 						<li class="divider"></li>

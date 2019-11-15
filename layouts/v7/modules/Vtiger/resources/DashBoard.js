@@ -31,6 +31,29 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		Vtiger_DashBoard_Js.currentInstance.loadWidget(widgetContainer);
 	},
 
+	addWidget1 : function(element, url) {
+		app.request.post({"url":url}).then(function(err,data){
+			var result = {
+				labels: data['labels'],
+				series: [
+					data['series']
+				]
+			};
+			var options = {
+				width: 1000,
+				height: 500,
+				high: 10,
+				axisX: {
+					labelInterpolationFnc: function(value, index) {
+						return value;
+					}
+				}
+			};
+			new Chartist.Line('.ct-chart', result, options);
+		});
+	},
+
+
 	addMiniListWidget: function(element, url) {
 		// 1. Show popup window for selection (module, filter, fields)
 		// 2. Compute the dynamic mini-list widget url
@@ -442,11 +465,11 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		var activeTabId = this.getActiveTabId();
 		urlParams += "&tab="+activeTabId;
 		app.helper.showProgress();
+
 		if(mode == 'open') {
 			app.request.post({"url":urlParams}).then(function(err,data){
 				widgetContainer.prepend(data);
 				vtUtils.applyFieldElementsView(widgetContainer);
-
 				var widgetChartContainer = widgetContainer.find(".widgetChartContainer");
 				if (widgetChartContainer.length > 0) {
 					widgetChartContainer.css("height", widgetContainer.height() - 60);
@@ -454,8 +477,10 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 
 				thisInstance.getWidgetInstance(widgetContainer);
 				try {
+
 					widgetContainer.trigger(Vtiger_Widget_Js.widgetPostLoadEvent);
 				} catch (error) {
+
 					widgetContainer.find('[name="chartcontent"]').html('<div>'+app.vtranslate('JS_NO_DATA_AVAILABLE')+'</div>').css({'text-align': 'center', 'position': 'relative', 'top': '100px'});
 				}
 				app.helper.hideProgress();
@@ -510,6 +535,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 								} else {
 									jQuery(data).insertAfter(jQuery('.widgetsList li:last','#tab_'+activeTabId));
 								}
+
 							}
 						}
 						app.helper.hideProgress();

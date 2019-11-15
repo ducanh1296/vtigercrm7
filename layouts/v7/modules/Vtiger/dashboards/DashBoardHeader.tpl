@@ -33,6 +33,11 @@
 							</li>
 						{/if}
 					{/foreach}
+					<li>
+						<a onclick="Vtiger_DashBoard_Js.addWidget1(this, 'index.php?module=Potentials&view=ShowWidget&name=GroupedBySalesPerson&linkid=59')" href="javascript:void(0);" data-linkid="59" data-name="GroupedBySalesPerson" data-width="2" data-height="1">
+							Opportunities by Stage1111111</a>
+					</li>
+
 
 					{if $MINILISTWIDGET && $MODULE_NAME == 'Home'}
 						<li class="divider"></li>

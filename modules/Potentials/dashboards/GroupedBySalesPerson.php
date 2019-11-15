@@ -25,27 +25,36 @@ class Potentials_GroupedBySalesPerson_Dashboard extends Vtiger_IndexAjax_View {
 		$linkId = $request->get('linkid');
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$data = $moduleModel->getPotentialsCountBySalesPerson();
+        $result = $moduleModel->getPotentialsCountBySalesPerson();
         $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
-        for($i = 0;$i<count($data);$i++){
-            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i]["last_name"],$data[$i]["link"]).'&nolistcache=1';
+        for($i = 0;$i<count($result);$i++){
+            $result[$i]["links"] = $listViewUrl.$this->getSearchParams($result[$i]["last_name"],$result[$i]["link"]).'&nolistcache=1';
         }
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());
 
 		$viewer->assign('WIDGET', $widget);
 		$viewer->assign('MODULE_NAME', $moduleName);
-		$viewer->assign('DATA', $data);
+		$viewer->assign('DATA', $result);
 
 		//Include special script and css needed for this widget
 		$viewer->assign('STYLES',$this->getHeaderCss($request));
 		$viewer->assign('CURRENTUSER', $currentUser);
-
 		$content = $request->get('content');
-		if(!empty($content)) {
-			$viewer->view('dashboards/DashBoardWidgetContents.tpl', $moduleName);
-		} else {
-			$viewer->view('dashboards/GroupBySalesPerson.tpl', $moduleName);
-		}
+		$data = array();
+        foreach ($result as $key => $value){
+            $data['labels'][$key] = $value['link'];
+            $data['series'][$key] = $value['count'];
+        }
+        $response = new Vtiger_Response();
+        $response->setResult($data);
+        $response->emit();
+//		if(!empty($content)) {
+//
+//			$viewer->view('dashboards/DashBoardWidgetContents.tpl', $moduleName);
+//		} else {
+//
+//			$viewer->view('dashboards/GroupBySalesPerson.tpl', $moduleName);
+//		}
 	}
 }

@@ -1,4 +1,4 @@
-{*<!--
+<!--
 /*********************************************************************************
 ** The contents of this file are subject to the vtiger CRM Public License Version 1.0
 * ("License"); You may not use this file except in compliance with the License
@@ -8,7 +8,7 @@
 * All Rights Reserved.
 *
 ********************************************************************************/
--->*}
+-->
 {strip}
     {if count($DATA) gt 0 }
         <input class="widgetData" type=hidden value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATA))}' />

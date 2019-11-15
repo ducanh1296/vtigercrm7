@@ -8,10 +8,14 @@
 *************************************************************************************}
 
 {strip}
+	<link rel="stylesheet" href="layouts/v7/lib/chartist-js-develop/dist/chartist.min.css">
+	<script type="text/javascript" src="layouts/v7/lib/chartist-js-develop/dist/chartist.min.js"></script>
+
 	<div class='dashBoardTabContainer'>
 		{include file="dashboards/DashBoardHeader.tpl"|vtemplate_path:$MODULE_NAME DASHBOARDHEADER_TITLE=vtranslate($MODULE, $MODULE)}
 		<br><div class="dashboardBanner"></div>
 		<div class="dashBoardTabContents clearfix">
+			<div class="ct-chart ct-square"></div>
 			<div class="gridster_{$TABID}">
 				<ul>
 					{assign var=COLUMNS value=2}
