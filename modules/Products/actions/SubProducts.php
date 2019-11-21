@@ -22,6 +22,7 @@ class Products_SubProducts_Action extends Vtiger_Action_Controller {
 
 	function process(Vtiger_Request $request) {
 		$productId = $request->get('record');
+
 		$productModel = Vtiger_Record_Model::getInstanceById($productId, 'Products');
 		$subProducts = $productModel->getSubProducts($active = true);
 		$values = array();
@@ -34,6 +35,8 @@ class Products_SubProducts_Action extends Vtiger_Action_Controller {
 								 'quantity'		=> $subProduct->get('quantityInBundle'),
 								 'stockMessage'	=> $stockMessage);
 		}
+
+        $values = Inventory_Detail_View::check($productId);
 
 		$result = array('isBundleViewable' => $productModel->isBundleViewable(), 'values' => $values);
 		$response = new Vtiger_Response();

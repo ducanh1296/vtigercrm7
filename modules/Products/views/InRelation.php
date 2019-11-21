@@ -11,6 +11,7 @@
 class Products_InRelation_View extends Vtiger_RelatedList_View {
 
 	function process(Vtiger_Request $request) {
+
 		$moduleName = $request->getModule();
 		$relatedModuleName = $request->get('relatedModule');
 		$parentId = $request->get('record');
@@ -98,7 +99,6 @@ class Products_InRelation_View extends Vtiger_RelatedList_View {
 		foreach ($moduleFields as $fieldName => $fieldModel) {
 			$fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
 		}
-
 		$viewer = $this->getViewer($request);
 		$viewer->assign('RELATED_RECORDS', $models);
 		$viewer->assign('PARENT_RECORD', $parentRecordModel);
@@ -138,7 +138,6 @@ class Products_InRelation_View extends Vtiger_RelatedList_View {
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->assign('SEARCH_DETAILS', $searchParams);
 		$viewer->assign('TAB_LABEL', $request->get('tab_label'));
-
 		return $viewer->view('RelatedList.tpl', $moduleName, 'true');
 	}
 

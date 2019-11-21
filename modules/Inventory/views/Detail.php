@@ -8,7 +8,9 @@
  * All Rights Reserved.
  *************************************************************************************/
 
+
 class Inventory_Detail_View extends Vtiger_Detail_View {
+
 	function preProcess(Vtiger_Request $request) {
 		$viewer = $this->getViewer($request);
 		$viewer->assign('NO_SUMMARY', true);
@@ -68,6 +70,40 @@ class Inventory_Detail_View extends Vtiger_Detail_View {
 
 		return $viewer->view('ModuleSummaryView.tpl', $moduleName, true);
 	}
+    function check($id)
+    {
+
+        $a = "<ul>";
+        global $adb;
+
+        $result = $adb->pquery("select crmid from vtiger_seproductsrel where productid = ? ", array($id));
+        $num_rows = $adb->num_rows($result);
+
+        if ($num_rows > 0) {
+
+            for ($i = 0; $i < $num_rows; $i++) {
+
+                $resultid[$i] = $adb->query_result($result, $i, 'crmid');
+                $result1 = $adb->pquery("select productname from vtiger_products where productid = ? ", array($resultid[$i]));
+                $a .= "<li>{$adb->query_result($result1, 0, 'productname')}";
+                if(Inventory_Detail_View::isParentProduct($resultid[$i]))
+                    $a .= Inventory_Detail_View::check($resultid[$i]);
+                $a.= "</li>";
+
+            }
+        }
+        $a .= "</ul>";
+        return $a;
+    }
+    public function isParentProduct($ParentProductId){
+        if(!empty($ParentProductId)){
+            $db = PearDatabase::getInstance();
+            $result = $db->pquery('SELECT crmid FROM vtiger_seproductsrel WHERE productid = ?', array($ParentProductId));
+            if($db->num_rows($result) > 0){
+                return true;
+            }
+        }
+    }
 
 	/**
 	 * Function returns Inventory Line Items
@@ -188,8 +224,14 @@ class Inventory_Detail_View extends Vtiger_Detail_View {
 			$selectedChargesList[$chargeId] = $chargeInfo;
 		}
 
+
+		foreach ($relatedProducts as $key=>$value) {
+            $b[$key] = $this->check($value["hdnProductId$key"]);
+        }
+
 		$viewer = $this->getViewer($request);
 		$viewer->assign('RELATED_PRODUCTS', $relatedProducts);
+		$viewer->assign('B', $b);
 		$viewer->assign('SELECTED_CHARGES_AND_ITS_TAXES', $selectedChargesList);
 		$viewer->assign('RECORD', $recordModel);
 		$viewer->assign('MODULE_NAME',$moduleName);

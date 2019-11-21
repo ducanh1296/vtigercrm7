@@ -1444,25 +1444,27 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
                     return;
                 }
 				var result = data;
-				var isBundleViewable = result.isBundleViewable;
+
+				// var isBundleViewable = result.isBundleViewable;
 				var responseData = result.values;
 				var subProductsContainer = jQuery('.subProductsContainer',lineItemRow);
 				var subProductIdHolder = jQuery('.subProductIds',lineItemRow);
+				//
+				// var subProductIdsList = '';
+				// var subProductHtml = '';
+                //                 for(var id in responseData) {
+                //                     if (isBundleViewable == 1) {
+				// 		subProductHtml += '<em> - '+responseData[id]['productName'] + ' (' +responseData[id]['quantity']+')';
+				// 		if (responseData[id]['stockMessage']) {
+				// 			 subProductHtml += ' - <span class="redColor">'+responseData[id]['stockMessage']+'</span>';
+				// 		}
+				// 		subProductHtml += '</em><br>';
+				// 	}
+                //                         subProductIdsList += id+':'+responseData[id]['quantity']+',';
+                //                     }
+				// subProductIdHolder.val(subProductIdsList);
+				subProductsContainer.html(responseData);
 
-				var subProductIdsList = '';
-				var subProductHtml = '';
-                                for(var id in responseData) {
-                                    if (isBundleViewable == 1) {
-						subProductHtml += '<em> - '+responseData[id]['productName'] + ' (' +responseData[id]['quantity']+')';
-						if (responseData[id]['stockMessage']) {
-							 subProductHtml += ' - <span class="redColor">'+responseData[id]['stockMessage']+'</span>';
-						}
-						subProductHtml += '</em><br>';
-					}
-                                        subProductIdsList += id+':'+responseData[id]['quantity']+',';
-                                    }
-				subProductIdHolder.val(subProductIdsList);
-				subProductsContainer.html(subProductHtml);
 			}
 		);
 	},

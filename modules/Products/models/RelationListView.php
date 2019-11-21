@@ -22,10 +22,10 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model {
 		if($parentModel->getModule()->getName() == $relationModel->getRelationModuleModel()->getName()) {
 			$isSubProduct = $relationModel->isSubProduct($parentModel->getId());
 		}
-		
-		if(!$isSubProduct){
-			return parent::getLinks();
-		}
+//		if(!$isSubProduct){
+//			return parent::getLinks();
+//		}
+        return parent::getLinks();
 	}
 	
 	public function getHeaders() {

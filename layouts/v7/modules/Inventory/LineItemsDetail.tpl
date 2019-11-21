@@ -142,7 +142,6 @@
                                 <img src='{$LINE_ITEM_DETAIL["productImage$INDEX"]}' height="42" width="42">
                             </td>
                         {/if}
-
                         {if $PRODUCT_VIEWABLE}
                             <td>
                                 <div>
@@ -150,7 +149,8 @@
                                         {$LINE_ITEM_DETAIL["productName$INDEX"]}
                                     {else}
                                         <h5><a class="fieldValue" href="index.php?module={$LINE_ITEM_DETAIL["entityType$INDEX"]}&view=Detail&record={$LINE_ITEM_DETAIL["hdnProductId$INDEX"]}" target="_blank">{$LINE_ITEM_DETAIL["productName$INDEX"]}</a></h5>
-                                        {/if}
+                                        {$B[$INDEX]}
+                                    {/if}
                                 </div>
                                 {if $LINE_ITEM_DETAIL["productDeleted$INDEX"]}
                                     <div class="redColor deletedItem">

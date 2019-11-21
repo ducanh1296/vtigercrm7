@@ -1,4 +1,8 @@
 <?php
+include_once 'include/Webservices/Relation.php';
+include_once 'vtlib/Vtiger/Module.php';
+include_once 'includes/main/WebUI.php';
+
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
@@ -60,13 +64,16 @@ class Products_Record_Model extends Vtiger_Record_Model {
 	 */
 	static function getListPriceValues($id) {
 		$db = PearDatabase::getInstance();
-		$listPrice = $db->pquery('SELECT * FROM vtiger_productcurrencyrel WHERE productid	= ?', array($id)); 
+
+		$listPrice = $db->pquery('SELECT * FROM vtiger_productcurrencyrel WHERE productid	= ?', array($id));
 		$listpriceValues = array();
 		for($i=0; $i<$db->num_rows($listPrice); $i++) {
 			$listpriceValues[$db->query_result($listPrice, $i, 'currencyid')] = $db->query_result($listPrice, $i, 'actual_price');
 		}
+
 		return $listpriceValues;
 	}
+
 
 	/**
 	 * Function to get subproducts for this record

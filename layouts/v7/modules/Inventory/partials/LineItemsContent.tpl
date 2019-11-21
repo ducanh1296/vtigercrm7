@@ -101,16 +101,21 @@
 					</div>
 				</div>
 			</div>
+            {assign var=ID value={$data.$hdnProductId}}
+            {$ID=(int)$ID}
+
 			<input type="hidden" value="{$data.$subproduct_ids}" id="{$subproduct_ids}" name="{$subproduct_ids}" class="subProductIds" />
-			<div id="{$subprod_names}" name="{$subprod_names}" class="subInformation">
+                <div id="{$subprod_names}" name="{$subprod_names}" class="subInformation">
 				<span class="subProductsContainer">
-					{foreach key=SUB_PRODUCT_ID item=SUB_PRODUCT_INFO from=$data.$subprod_qty_list}
-						<em> - {$SUB_PRODUCT_INFO.name} ({$SUB_PRODUCT_INFO.qty})
-							{if $SUB_PRODUCT_INFO.qty > getProductQtyInStock($SUB_PRODUCT_ID)}
-								&nbsp;-&nbsp;<span class="redColor">{vtranslate('LBL_STOCK_NOT_ENOUGH', $MODULE)}</span>
-							{/if}
-						</em><br>
-					{/foreach}
+                    {Inventory_Detail_View::check($ID)}
+{*					{foreach key=SUB_PRODUCT_ID item=SUB_PRODUCT_INFO from=$data.$subprod_qty_list}*}
+{*						<em> - {$SUB_PRODUCT_INFO.name} ({$SUB_PRODUCT_INFO.qty})*}
+{*							{if $SUB_PRODUCT_INFO.qty > getProductQtyInStock($SUB_PRODUCT_ID)}*}
+{*								&nbsp;-&nbsp;<span class="redColor">{vtranslate('LBL_STOCK_NOT_ENOUGH', $MODULE)}</span>*}
+{*							{/if}*}
+{*						</em><br>*}
+
+{*					{/foreach}*}
 				</span>
 			</div>
 			{if $data.$productDeleted}
